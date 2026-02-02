@@ -1,0 +1,56 @@
+{
+  "metadata": {
+    "function_name": "factorial",
+    "args": ["n"],
+    "control_flow": [
+      {
+        "type": "if_condition",
+        "source": "if n <= 1:\n        return 1",
+        "line_start": 2,
+        "line_end": 3,
+        "condition": "n <= 1"
+      },
+      {
+        "type": "recursion",
+        "source": "return n * factorial(n - 1)",
+        "line_start": 4,
+        "line_end": 4,
+        "recursive_step": "return n * factorial(n - 1)"
+      }
+    ],
+    "loops": [],
+    "recursions": [
+      {
+        "type": "recursion",
+        "source": "return n * factorial(n - 1)",
+        "line_start": 4,
+        "line_end": 4,
+        "recursive_step": "return n * factorial(n - 1)",
+        "base_case_condition": "n <= 1"
+      }
+    ],
+    "variables": []
+  },
+  "explanation": {
+    "goal": "Compute the factorial of a non-negative integer.",
+    "assumptions": [
+      "Input n is a non-negative integer."
+    ],
+    "invariants": [
+      "factorial(n) = n! for n >= 0",
+      "During recursion, the intermediate result represents the product of integers from n down to (current recursion depth + 1)."
+    ],
+    "correctness_argument": "The base case (n <= 1) returns 1, which is the factorial of 0 and 1. For n > 1, the function recursively calls itself with n-1. The recursive calls continue until the base case is reached. Each recursive call multiplies the current value of n with the factorial of n-1. This correctly computes n * (n-1) * (n-2) * ... * 1, which is the definition of n!.",
+    "termination_argument": "The recursion terminates because n is decremented by 1 in each recursive call. Since the base case is n <= 1, and n is a non-negative integer, the value of n will eventually reach 1 or 0, satisfying the base case and stopping the recursion.",
+    "edge_cases": [
+      "n = 0: Returns 1, which is correct.",
+      "n = 1: Returns 1, which is correct."
+    ],
+    "complexity": {
+      "time": "O(n)",
+      "time_justification": "The function makes n recursive calls.",
+      "space": "O(n)",
+      "space_justification": "The function uses O(n) space due to the call stack during recursion."
+    }
+  }
+}
