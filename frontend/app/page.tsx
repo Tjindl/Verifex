@@ -22,7 +22,8 @@ export default function Home() {
     setResult(null);
 
     try {
-      const res = await fetch("http://localhost:8000/analyze", {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${apiUrl}/analyze`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code }),
@@ -154,22 +155,81 @@ export default function Home() {
               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
 
                 {/* Result Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-900 dark:bg-slate-900/50 text-white dark:text-white border border-transparent dark:border-slate-800 shadow-xl">
+                {/* Result Header */}
+                <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border shadow-xl transition-colors ${result.verification?.verified
+                  ? "bg-slate-900 dark:bg-slate-900/50 text-white dark:text-white border-transparent dark:border-slate-800"
+                  : "bg-red-950 dark:bg-red-950/50 text-white border-red-500/50"
+                  }`}>
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-green-500/20 rounded-lg">
-                      <CheckCircle2 className="w-6 h-6 text-green-400 dark:text-green-500" />
+                    <div className={`p-2 rounded-lg ${result.verification?.verified ? "bg-green-500/20" : "bg-red-500/20"}`}>
+                      {result.verification?.verified ? (
+                        <CheckCircle2 className="w-6 h-6 text-green-400 dark:text-green-500" />
+                      ) : (
+                        <AlertCircle className="w-6 h-6 text-red-400" />
+                      )}
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg">Verification Complete</h3>
-                      <p className="text-sm opacity-80 font-mono text-green-300 dark:text-green-500">
-                        {result.metadata.function_name}()
+                      <h3 className="font-bold text-lg">
+                        {result.verification?.verified ? "Verification Successful" : "Verification Failed"}
+                      </h3>
+                      <p className={`text-sm opacity-80 font-mono ${result.verification?.verified ? "text-green-300 dark:text-green-500" : "text-red-300"}`}>
+                        {result.verification?.num_tests > 0
+                          ? `Checked ${result.verification.num_tests} inputs via Hypothesis`
+                          : "Static Analysis Only"}
                       </p>
                     </div>
                   </div>
-                  <Badge variant="outline" className="w-fit border-green-500/50 text-green-400 dark:text-green-500 dark:border-green-800 bg-green-500/10 px-4 py-1 text-sm font-mono">
-                    SAFE
+                  <Badge
+                    variant="outline"
+                    className={`w-fit px-4 py-1 text-sm font-mono border ${result.verification?.verified
+                      ? "border-green-500/50 text-green-400 dark:text-green-500 dark:border-green-800 bg-green-500/10"
+                      : "border-red-500/50 text-red-400 bg-red-500/10"
+                      }`}
+                  >
+                    {result.verification?.verified ? "VERIFIED SAFE" : "FALSIFIED"}
                   </Badge>
                 </div>
+
+                {/* Counter Example if Failed */}
+                {!result.verification?.verified && result.verification?.counter_example && (
+                  <Card className="border-red-500/50 bg-red-500/5 dark:bg-red-950/20">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-red-500 flex items-center gap-2">
+                        <ShieldCheck className="w-5 h-5" /> Verification Failed
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+
+                      {/* Reason */}
+                      {result.verification?.failure_reason && (
+                        <div>
+                          <p className="text-sm font-semibold text-red-500 mb-1">Reason:</p>
+                          <div className="font-mono text-sm text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 p-2 rounded border border-red-200 dark:border-red-800">
+                            {result.verification.failure_reason}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Input */}
+                      <div>
+                        <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-1">Counter-Example Input:</p>
+                        <div className="font-mono text-sm bg-red-950/10 dark:bg-red-950/50 text-red-600 dark:text-red-400 p-4 rounded-lg border border-red-500/20">
+                          {result.verification.counter_example}
+                        </div>
+                      </div>
+
+                      <div className="mt-4 text-xs text-slate-400">
+                        Output from Hypothesis Engine:
+                        <details>
+                          <summary className="cursor-pointer hover:text-slate-300">View Raw Logs</summary>
+                          <pre className="mt-1 opacity-50 overflow-x-auto whitespace-pre-wrap p-2 bg-black/20 rounded">
+                            {result.verification.output}
+                          </pre>
+                        </details>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
 
                 {/* Correctness & Complexity */}
                 <div className="grid grid-cols-1 gap-6">

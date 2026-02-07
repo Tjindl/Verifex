@@ -6,6 +6,7 @@ WORKDIR /app
 # Install build dependencies (for tree-sitter compilation if needed)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Install python dependencies

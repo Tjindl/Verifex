@@ -30,3 +30,11 @@ class CodeMetadata(BaseModel):
     recursions: List[RecursionInfo] = []
     variables: List[VariableRole] = []
     raw_code: str
+
+class VerificationResult(BaseModel):
+    verified: bool
+    output: str
+    counter_example: Optional[str] = None
+    failure_reason: Optional[str] = None
+    num_tests: int = 0
+

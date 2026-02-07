@@ -13,6 +13,11 @@ The system uses a hybrid Neuro-Symbolic approach:
     - Takes the structured metadata from the Core module.
     - A formal verification persona (System Prompt) generates the logical explanation.
     - Output is strictly structured JSON.
+3.  **Dynamic Verification (Hypothesis)**:
+    - Automatically generates property-based tests using `Hypothesis`.
+    - LLM infers Invariants, Preconditions, and Argument Types.
+    - Verification Engine dynamically constructs test strategies to fuzz the function.
+    - Provides real-time Counter-Examples if verification fails.
 
 ## Project Structure
 
@@ -23,6 +28,7 @@ code_explainer/
 │   ├── analyzer.py         # Orchestrator
 │   ├── parser.py           # Tree-sitter Wrapper
 │   ├── heuristics.py       # Invariant Detection
+│   ├── verifier.py         # Hypothesis Test Generation
 │   └── models.py           # Pydantic Models
 ├── llm/
 │   ├── client.py           # OpenAI Client (with Mock fallback)

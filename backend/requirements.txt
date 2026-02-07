@@ -86,6 +86,7 @@ httptools==0.7.1
 httpx==0.28.1
 huggingface-hub==0.17.3
 hyperframe==6.1.0
+hypothesis==6.98.0
 idna==3.11
 iniconfig==2.3.0
 ipykernel==6.25.2

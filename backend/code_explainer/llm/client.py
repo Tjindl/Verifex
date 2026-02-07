@@ -36,6 +36,7 @@ class LLMClient:
         prompt = USER_PROMPT_TEMPLATE.format(
             code=metadata.raw_code,
             function_name=metadata.function_name,
+            args=json.dumps(metadata.args),
             control_flow_summary=control_flow_summary,
             loops=loops_str,
             recursions=recursions_str

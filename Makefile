@@ -15,6 +15,12 @@ docker-build:
 docker-run:
 	docker-compose up
 
+docker-dev:
+	docker-compose up --build
+
+docker-stop:
+	docker-compose down
+
 frontend-install:
 	cd frontend && npm install
 

@@ -19,6 +19,7 @@ Code:
 
 Extracted Metadata (Static Analysis):
 - Function Name: {function_name}
+- Arguments: {args}
 - Control Flow: {control_flow_summary}
 - Detected Loops & Invariants: {loops}
 - Recursion: {recursions}
@@ -26,8 +27,9 @@ Extracted Metadata (Static Analysis):
 Task:
 Produce a structured explanation in JSON format with the following keys:
 - "goal": Brief goal of the function.
-- "assumptions": List of preconditions (e.g., input is sorted).
-- "invariants": List of formal invariants.
+- "argument_types": Object mapping each argument name to its expected type and Hypothesis strategy. Example: {{"n": {{"type": "int", "strategy": "integers(min_value=0, max_value=1000)"}}, "arr": {{"type": "list[int]", "strategy": "lists(integers(), min_size=1)"}}}}
+- "assumptions": List of executable Python boolean expressions representing preconditions (e.g. 'n >= 0', 'len(arr) > 0') to filter inputs.
+- "invariants": List of executable Python boolean expressions (e.g. 'result >= 1', 'result == sum(arr)') checking properties of the result.
 - "correctness_argument": A concise text justifying why the code is correct using the invariants.
 - "termination_argument": Why the loop/recursion terminates.
 - "edge_cases": List of edge cases handled (e.g., empty list).
